@@ -4,41 +4,32 @@ import matplotlib.pyplot as plt # Plots, code taken from matplotlib.org
 from numpy.random import randint 
 
 def getCRC(ht,div):
-    #add your code here
-    #print(ht + " Caw")
+    #print(ht +)
     hexstr = ht
-    print(str(hexstr) + " Hello" )
-    bt=[int(b) for b in bin(int(hexstr,16))[2:].zfill(8)]
-    print(str(bt) + " BT")
-    #q = len(div)-1
-    #bt = ht
-    #bt=[bin(int(ht,16)).zfill(8)]
+    #print(str(hexstr) + " Hello" )
     #bt=[int(c) for c in bin(int(ht,16))[:2].zfill(8)]
-    x =[]
-    y =[0,0,0,0]
+    bt=[int(b) for b in bin(int(hexstr,16))[2:].zfill(8)] #Changes string to a binary value
+    #print(str(bt) + " BT")
+    x =[] #since div is length 5 this will be [9,9,9,9]
+    y =[] #since div is length 5 this will be [0,0,0,0]
     for a in range(len(div)):
-        x.append(9)
-    #bt = int(bt, base=16)
+        x.append(9) 
     for i in range(len(div)-1):
-        bt.append(0)
-        #bt+=0
+        bt.append(0) #adds zeros to the end of the binary value so a CRC can be acquired
+        y.append(0)
     #print(bt)
-    #for i in range(len(bt)):
-    #while bt[0] != 1 and len(bt) > 5:
     while bt[0] != 1 and len(bt) > len(div):
         #print(bt) #debug
-        bt.pop(0)
-        #x = bt[0:4] ^ div
+        bt.pop(0) # Calculating a CRC requires the binary value to have no leading zeros, bt not changed after this
     for j in range(len(div)):
         #print(bt[j])
-        #x = [1,1,1,1,0]
-        x[j] = int(bt[j]) ^ div[j]
+        x[j] = int(bt[j]) ^ div[j] #Sets the x array to be the first (div) numbers of the bt array XORed with the divisor
     count = len(div)
     #print("Debug length of bt = " + str(len(bt)))
     while (count) < len(bt):
         while x[0] != 1 and (count) < len(bt):
-            x.pop(0)
-            x.append(int(bt[count]))
+            x.pop(0) #removes leading zeros from x
+            x.append(int(bt[count])) #adds the next value from bt to the array
             count = count+1
         #print(" x = " + str(x))
         for j in range(len(div)):
@@ -50,17 +41,17 @@ def getCRC(ht,div):
     #print(x)
     while x[0] != 1:
         x.pop(0)
-    if len(x) == len(div):
+    if len(x) == len(div): #if the lengths are the same then x can be XORed one more time
         for j in range(len(div)):
             x[j] = int(x[j]) ^ div[j]
         x.pop(0)
-    for k in range(len(x)):
-        bt[-k-1] = x[-k-1]
+    #for k in range(len(x)):
+        #bt[-k-1] = x[-k-1]
     #print(bt)
     #print(str(x) + "CRC")
-    if(len(x)<len(div)-1):
+    if(len(x)<len(div)-1): # if the length of x is less than the length of the divisor minus 1, add leading zeros
         for j in range(len(x)):
-            y[j+len(div)-1-len(x)] = x[j]
+            y[j+len(div)-1-len(x)] = x[j] #changes the last length of x bits of y to be the values in x, i.e. if x = [1,1] then y =[0,0,1,1]
         #print(str(y) + "CRC")
         return y
     #print(str(x) + "CRC")    
@@ -92,7 +83,7 @@ for n in lst:
         msg1 =frame + counter  + msg
         #
         #CRCmsg = getCRC(msg,div)
-        print("CCCCC"+ str(msg1))
+        print(str(msg1))
         CRCmsg = getCRC(msg1,div)
         #print(CRCmsg)
         for i in range(len(CRCmsg)):
